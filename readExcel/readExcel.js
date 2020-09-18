@@ -58,27 +58,20 @@ module.exports.readExcel = (event, context, callback) => {
     });
     }
     else{
-      failedRows.push(element);
+      failedRows.push({id: element.id, name: element.name, phoneNo : element.phoneNo, email : element.email, city: element.city });
     }
     });
 
   if(failedRows.length > 0){
-    var data = [];
-    failedRows.forEach(tree => {
-      data.push({id: tree.id, name: tree.name, phoneNo : tree.phoneNo, email : tree.email, city: tree.city });
-    });
+      var ws =    XLSX.utils.json_to_sheet(failedRows, {header :['id', 'name', 'phoneNo', 'email', 'city']});
 
-      var ws =    XLSX.utils.json_to_sheet(data, {header :['id', 'name', 'phoneNo', 'email', 'city']});
-      console.log(ws);
+     // console.log(ws);
+
       var wb =  XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'users');
-      XLSX.writeFile(wb, "failedUser.xlsx");
+      XLSX.writeFile(wb, "failedUsers.xlsx");
 
        }
-
-  function recurse_bookmarks(data, tree){
-    data.push({id: tree.id, name: tree.name, phoneNo : tree.phoneNo, email : tree.email, city: tree.city })
-  }
 
   console.log("failed rows-"+ JSON.stringify(failedRows.length));
 };
